@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoShare - Index of {{PATH}}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-server"></i>
+                <h1>NeoShare</h1>
+            </div>
+            <div class="header-right">
+                <div class="current-path">
+                    <i class="fas fa-folder-open"></i>
+                    <span id="current-path">{{PATH}}</span>
+                </div>
+                <div class="theme-options">
+                    <div class="theme-switch">
+                        <label class="theme-switch-label">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="theme-slider">
+                                <i class="fas fa-sun sun-icon"></i>
+                                <i class="fas fa-moon moon-icon"></i>
+                            </span>
+                        </label>
+                    </div>
+                    <button id="themeButton" class="theme-button">
+                        <i class="fas fa-moon"></i> Dark Mode
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Status Messages -->
+            <div id="statusMessages"></div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="upload-zone" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drop files here or click to upload</p>
+                        <small>Supports multiple files and drag & drop</small>
+                        <input type="file" name="file" id="fileInput" multiple>
+                    </div>
+                    <button type="submit" class="upload-btn" id="uploadBtn">
+                        <i class="fas fa-upload"></i> Upload Files
+                    </button>
+                </form>
+            </div>
+
+            <!-- File Explorer -->
+            <div class="file-explorer">
+                <div class="explorer-header">
+                    <div class="header-name">Name</div>
+                    <div class="header-size">Size</div>
+                    <div class="header-modified">Modified</div>
+                    <div class="header-actions">Actions</div>
+                </div>
+                <div class="file-list" id="fileList">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading files...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>
+                <i class="fas fa-server"></i> 
+                NeoShare File Server &copy; 2025 | 
+                <i class="fas fa-code"></i> 
+                Modern. Simple. Secure.
+            </p>
+        </footer>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
