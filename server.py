@@ -371,7 +371,8 @@ if __name__ == "__main__":
     print("=" * 50)
     print("🚀 NeoShare File Server (Threaded + Hardened)")
     print("=" * 50)
-    print(f"📡 Server running at http://{args.host}:{args.port}/")
+    display_host = "localhost" if args.host == "0.0.0.0" else args.host
+    print(f"📡 Server running at http://{display_host}:{args.port}/")
     print(f"📁 Serving files from: {httpd.serve_root}")
     print("🔧 Press Ctrl+C to stop the server")
     print("=" * 50)
