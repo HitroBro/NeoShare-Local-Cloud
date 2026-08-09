@@ -1,162 +1,110 @@
-# 📂 NeoShare: Local Cloud Server
+# NeoShare-Local-Cloud
 
-[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Architecture](https://img.shields.io/badge/Architecture-Threaded-2EA44F?style=for-the-badge&logo=serverless&logoColor=white)]()
-[![Security](https://img.shields.io/badge/Security-Hardened-DC3545?style=for-the-badge&logo=guard&logoColor=white)]()
-[![Zero Deps](https://img.shields.io/badge/Dependencies-Zero-6C757D?style=for-the-badge&logo=python&logoColor=white)]()
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+A custom HTTP file server built from scratch with Zero Dependencies.
 
-**A secure, multi-threaded HTTP file server built from scratch with Zero Dependencies.**
+## Problem Statement
 
----
+Python's built-in `http.server` is single-threaded and lacks security features needed for production file sharing. This project implements a secure, multi-threaded HTTP file server from scratch using only Python's standard library.
 
-## 🚀 Overview
+## Architecture
 
-**NeoShare** is a custom implementation of a web server designed to solve the limitations of Python's standard `http.server`.
-
-Unlike the standard library (which blocks during transfers), NeoShare uses a **Threaded Architecture** to handle multiple users simultaneously. It features a modern, responsive UI with **Dark Mode**, **Drag-and-Drop Uploads**, and **Video Streaming** capabilities—all without installing a single external library (No Flask, No Django, No FastAPI).
-
----
-
-## ✨ Key Features
-
-| Feature | Description |
-|---------|-------------|
-| **⚡ Multi-Threaded Core** | Implements `ThreadingHTTPServer` to serve multiple clients instantly without blocking/freezing |
-| **🛡️ Security Hardened** | Patched against **Directory Traversal** attacks and enforces a **2GB Upload Limit** to prevent RAM exhaustion (DoS) |
-| **📤 Modern Uploads** | Custom `multipart/form-data` parser handles Drag-and-Drop uploads seamlessly |
-| **🎬 Media Streaming** | Supports HTTP `Range` headers, allowing video seeking and resume capabilities in the browser |
-| **📦 Smart Downloads** | Auto-generates `.tar.gz` archives on the fly when downloading entire folders |
-| **🎨 Responsive UI** | Auto-detects system theme (Dark/Light mode) and works on Mobile/Desktop |
-
----
-
-## 🛠️ Technical Stack
-
-* **Backend:** Python 3 (Standard Library only: `http.server`, `socketserver`, `tarfile`, `mimetypes`, `urllib.parse`)
-* **Frontend:** HTML5, CSS3 (Custom Properties/Variables), Vanilla JavaScript (Fetch API)
-* **Protocols:** HTTP/1.1 (GET, POST, Range Requests, Chunked Transfer)
-* **Concurrency:** `ThreadingMixIn` + `ThreadingHTTPServer` (one thread per connection)
-
----
-
-## 📁 Project Structure
-
-```text
-NeoShare-Local-Cloud/
-├── server.py       # Threaded HTTP server with custom request handler
-├── index.html      # Responsive web UI (dark/light auto-detect)
-├── script.js       # Frontend logic: upload, download, navigation, streaming
-├── styles.css      # Cyberpunk-themed responsive styling
-├── LICENSE         # MIT License
-└── README.md
+```mermaid
+graph TD
+    A[HTTP Request] --> B[ThreadingHTTPServer]
+    B --> C[NeoShareHandler]
+    C --> D{Request Type}
+    D -->|GET| E[File/Directory Listing]
+    D -->|POST| F[Multipart Upload Parser]
+    D -->|HEAD| G[Metadata Only]
+    E --> H[Range Request Support]
+    E --> I[Directory Traversal Check]
+    E --> J[Auto tar.gz Generation]
+    F --> I
+    F --> K[2GB Size Limit]
+    E --> L[Static File Serving]
 ```
 
----
+### Key Components
 
-## ⚙️ How It Works
+| Component | Responsibility |
+|-----------|----------------|
+| **ThreadingHTTPServer** | One thread per connection, non-blocking |
+| **NeoShareHandler** | Custom request handler (GET, POST, HEAD) |
+| **Path Sanitizer** | Directory traversal prevention |
+| **Multipart Parser** | Streaming upload handling |
+| **Range Handler** | HTTP Range support for video streaming |
+| **Archive Generator** | Streaming tar.gz for directory downloads |
 
-### Security Hardening
-```python
-# Path traversal protection
-request_path = os.path.normpath(request_path)
-if not request_path.startswith(base_path):
-    self.send_error(403, "Forbidden: Directory traversal attempt")
-    return
+## Build & Run
 
-# Upload size limit (2GB)
-if content_length > 2 * 1024 * 1024 * 1024:
-    self.send_error(413, "Payload Too Large: 2GB limit exceeded")
-    return
-```
+### Prerequisites
 
-### Range Request Streaming (Video Seeking)
-```python
-# Supports HTTP Range headers for video/audio seeking
-range_header = self.headers.get('Range')
-if range_header:
-    start, end = parse_range(range_header, file_size)
-    self.send_response(206)  # Partial Content
-    self.send_header('Content-Range', f'bytes {start}-{end}/{file_size}')
-```
+- Python 3.7+ (standard library only)
 
-### Auto Archive Generation
-```python
-# Folder download → streaming .tar.gz
-with tarfile.open(fileobj=self.wfile, mode='w|gz') as tar:
-    for root, dirs, files in os.walk(folder_path):
-        for file in files:
-            tar.add(os.path.join(root, file), arcname=relative_path)
-```
-
----
-
-## 🚀 Quick Start
-
-Since NeoShare uses **Zero Dependencies**, you don't need `pip install`. Just run it.
+### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/HitroBro/NeoShare-Local-Cloud.git
-
-# Enter directory
 cd NeoShare-Local-Cloud
 
-# Start Server (Default Port: 8000)
+# Run (no dependencies!)
 python server.py
-```
 
-Open your browser at **http://localhost:8000**
-
-### Custom Port
-```bash
+# Custom port
 python server.py 9000
-# Or set environment variable
+# Or via environment
 PORT=9000 python server.py
 ```
 
----
+### Access
 
-## 📸 UI Preview
+Open browser to `http://localhost:8000` (or your custom port)
 
-| Light Mode | Dark Mode |
-|------------|-----------|
-| Auto-detects `prefers-color-scheme` | Cyberpunk green-on-black theme |
+## Features
 
-*Responsive design works on mobile, tablet, and desktop.*
+- **Zero Dependencies** — Pure Python standard library
+- **Multi-threaded** — One thread per connection
+- **Security Hardened** — Path traversal protection, 2GB upload limit
+- **Range Requests** — Video seeking/resume support
+- **Auto Archive** — Streaming tar.gz for folder downloads
+- **Drag & Drop Upload** — Modern HTML5 File API
+- **Auto Theme** — Dark/light mode detection
+- **Responsive UI** — Mobile-friendly
 
----
+## Security
 
-## 🔧 Use Cases
+- **Path Traversal Protection** — Double normalization + prefix check
+- **Upload Size Limit** — 2GB hard limit (configurable)
+- **No Directory Listing Outside Root** — Chroot-like behavior
 
-- **Local file sharing** across devices on LAN
-- **Quick media streaming** from laptop to TV/phone
-- **Development file server** for testing uploads/downloads
-- **Learning HTTP internals** — clean, readable stdlib implementation
-- **Air-gapped environments** — no internet, no dependencies
+## Screenshots
 
----
+*Coming soon — add screenshots of the web UI, upload progress, and video streaming*
 
-## 📄 License
+## Configuration
 
-MIT License — Feel free to use, modify, and distribute.
+Environment variables:
 
-## 🤝 Contributing
+```bash
+PORT=8000                    # Server port (default: 8000)
+MAX_UPLOAD_SIZE=2147483648   # 2GB in bytes
+BASE_DIR=/path/to/share      # Root directory to serve
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Ensure zero external dependencies are introduced
-4. Test on multiple browsers (Chrome, Firefox, Safari)
-5. Submit a pull request
+## Roadmap
 
----
+- [ ] Basic authentication support
+- [ ] Symlink handling options
+- [ ] Access logging
+- [ ] WebDAV support
 
-<p align="center">
-  <strong>Built for learning, hardened for production.</strong>
-</p>
+## License
 
-<p align="center">
-  <a href="https://github.com/HitroBro/NeoShare-Local-Cloud">
-    <img src="https://komarev.com/ghpvc/?username=HitroBro&repo=NeoShare-Local-Cloud&color=2EA44F&style=for-the-badge" alt="Views" />
-  </a>
-</p>
+MIT License — See [LICENSE](LICENSE) for details.
+
+## Related Projects
+
+- [async-tcp-gateway](https://github.com/HitroBro/async-tcp-gateway) — High-performance C networking
+- [HitroBro.github.io](https://github.com/HitroBro/HitroBro.github.io) — Technical portfolio with interactive demos
+- [Modern-YTDLP-GUI](https://github.com/HitroBro/Modern-YTDLP-GUI) — Desktop automation tool
