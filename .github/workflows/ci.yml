@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: '3.12'
+
+      - name: Run Tests
+        run: |
+          python3 -c "import sys; sys.path.insert(0, '.'); from server import FileServer; print('Import test passed: FileServer class loads correctly')"
+        working-directory: .
+
+      - name: Code Quality
+        run: |
+          pip install ruff --break-system-packages
+          ruff check .
+        working-directory: .
