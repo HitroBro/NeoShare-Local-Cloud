@@ -6,14 +6,26 @@ import argparse
 import json
 import datetime
 import mimetypes
+import time
+import hashlib
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import unquote, urlparse, parse_qs
+from collections import defaultdict
 
 # Directory containing UI assets (index.html, styles.css, script.js)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Hard cap for uploads to reduce memory/DoS risk (this server reads uploads into RAM)
+# Hard cap for uploads to reduce memory/DoS risk
 MAX_UPLOAD_SIZE = 2 * 1024 * 1024 * 1024  # 2 GB
+
+# Rate limiting: per-IP upload tracking
+UPLOAD_RATE_LIMIT = defaultdict(list)  # IP -> list of timestamps
+RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_MAX_REQUESTS = 10  # max uploads per minute per IP
+
+# Optional basic auth (set via environment variables)
+AUTH_USER = os.environ.get("NEOSHARE_USER")
+AUTH_PASS = os.environ.get("NEOSHARE_PASS")
 
 
 class FileServer(BaseHTTPRequestHandler):
@@ -55,6 +67,39 @@ class FileServer(BaseHTTPRequestHandler):
         self.send_error(404, "Not Found")
 
     def do_POST(self):
+        # Basic Auth check
+        if AUTH_USER and AUTH_PASS:
+            auth_header = self.headers.get("Authorization", "")
+            if not auth_header.startswith("Basic "):
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
+                self.end_headers()
+                return
+            import base64
+            try:
+                decoded = base64.b64decode(auth_header[6:]).decode()
+                user, pwd = decoded.split(":", 1)
+                if user != AUTH_USER or pwd != AUTH_PASS:
+                    self.send_response(401)
+                    self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
+                    self.end_headers()
+                    return
+            except Exception:
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
+                self.end_headers()
+                return
+
+        # Rate limiting check
+        client_ip = self.client_address[0]
+        now = time.time()
+        # Clean old timestamps
+        UPLOAD_RATE_LIMIT[client_ip] = [ts for ts in UPLOAD_RATE_LIMIT[client_ip] if now - ts < RATE_LIMIT_WINDOW]
+        if len(UPLOAD_RATE_LIMIT[client_ip]) >= RATE_LIMIT_MAX_REQUESTS:
+            self.log_message("RATE LIMIT: Upload rejected for %s (too many requests)", client_ip)
+            return self.send_error(429, "Too Many Requests")
+        UPLOAD_RATE_LIMIT[client_ip].append(now)
+
         # Validate Content-Length (required for safe read sizing)
         try:
             length = int(self.headers.get("Content-Length", 0))
