@@ -119,3 +119,21 @@ body {
 .logo-icon {
   font-size: 1.5rem;
 }
+
+
+/* File Explorer Header Grid */
+.explorer-header {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) 110px 180px 120px;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--hover-subtle);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
