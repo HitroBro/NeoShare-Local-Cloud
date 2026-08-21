@@ -27,7 +27,28 @@
 
         <main id="mainContent">
             <!-- Path & Navigation Bar -->
-            <div class="current-path-bar">
+            <!-- Toolbar: Navigation, Search, View Controls -->
+            <section class="toolbar" aria-label="File management tools">
+                <nav class="breadcrumb-container" id="breadcrumbContainer" aria-label="Breadcrumb"></nav>
+                <div class="toolbar-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input type="text" id="searchInput" placeholder="Filter files... (Press /)" autocomplete="off">
+                        <button id="searchClearBtn" class="search-clear" aria-label="Clear filter" style="display:none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="view-toggle" role="group" aria-label="View Mode">
+                        <button id="viewListBtn" class="btn btn-icon active" title="List View" aria-label="List view">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button id="viewGridBtn" class="btn btn-icon" title="Grid View" aria-label="Grid view">
+                            <i class="fas fa-grip-horizontal"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <div class="current-path-bar" style="display:none;">
                 <span id="current-path">{{PATH}}</span>
             </div>
 
