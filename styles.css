@@ -199,3 +199,38 @@ body {
   gap: var(--space-2);
   justify-content: flex-end;
 }
+
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .explorer-header, .file-item {
+    grid-template-columns: minmax(180px, 1fr) 90px 90px;
+  }
+  .header-modified, .file-modified {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .explorer-header {
+    display: none;
+  }
+  .file-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+  .file-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.8125rem;
+  }
+  .file-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: var(--space-2);
+  }
+}
