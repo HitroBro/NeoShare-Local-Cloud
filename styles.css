@@ -457,3 +457,13 @@ body {
   border-radius: var(--radius-full);
   transition: width 150ms ease;
 }
+
+
+/* Search Box Polish */
+.search-box input::placeholder {
+  color: var(--text-subtle);
+}
+
+.search-clear:hover {
+  color: var(--danger);
+}
