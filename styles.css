@@ -467,3 +467,25 @@ body {
 .search-clear:hover {
   color: var(--danger);
 }
+
+
+/* Badge Components */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.badge-info {
+  background-color: var(--info-bg);
+  color: var(--info);
+}
+
+.badge-success {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
