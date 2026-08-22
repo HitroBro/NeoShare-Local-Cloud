@@ -558,3 +558,32 @@ body {
   justify-content: center;
   margin-top: var(--space-2);
 }
+
+
+/* Sortable Headers */
+.explorer-header .sortable {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.explorer-header .sortable:hover {
+  color: var(--primary);
+}
+
+.sort-icon {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.sortable.asc .sort-icon {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.sortable.desc .sort-icon {
+  opacity: 1;
+  color: var(--primary);
+}
