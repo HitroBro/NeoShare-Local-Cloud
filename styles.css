@@ -366,3 +366,61 @@ body {
   color: var(--primary);
   border-color: var(--primary);
 }
+
+
+/* Upload Dropzone */
+.upload-section {
+  margin-bottom: var(--space-6);
+}
+
+.upload-zone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  background-color: var(--bg-surface);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  background-color: var(--hover-subtle);
+}
+
+.upload-zone.dragover {
+  border-color: var(--primary);
+  background-color: var(--primary-subtle);
+  transform: scale(1.005);
+}
+
+.upload-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.upload-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.browse-link {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.upload-subtitle {
+  color: var(--text-muted);
+}

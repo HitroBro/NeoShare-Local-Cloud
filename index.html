@@ -54,7 +54,16 @@
 
             <!-- Upload Section Placeholder -->
             <div class="upload-section">
-                <div class="upload-zone" id="dropZone">
+                <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload files">
+                    <div class="upload-zone-content">
+                        <div class="upload-icon-wrapper">
+                            <i class="fas fa-cloud-upload-alt upload-cloud-icon"></i>
+                        </div>
+                        <div class="upload-text">
+                            <p class="upload-title font-semibold">Drop files here, or <span class="browse-link">browse</span></p>
+                            <p class="upload-subtitle text-xs">Supports files up to 2GB</p>
+                        </div>
+                    </div>
                     <p>Drop files here or click to upload</p>
                     <input type="file" id="fileInput" multiple style="display:none;">
                 </div>
