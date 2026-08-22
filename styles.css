@@ -424,3 +424,36 @@ body {
 .upload-subtitle {
   color: var(--text-muted);
 }
+
+
+/* Upload Progress */
+.upload-progress-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-md);
+}
+
+.upload-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.progress-bar-track {
+  height: 8px;
+  width: 100%;
+  background-color: var(--hover-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+  border-radius: var(--radius-full);
+  transition: width 150ms ease;
+}
