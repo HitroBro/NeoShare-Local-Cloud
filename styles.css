@@ -718,3 +718,10 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
   transform: translateY(24px);
   opacity: 0;
 }
+
+
+/* Text Selection & Focus */
+::selection {
+  background-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.25);
+  color: var(--text-main);
+}
