@@ -19,3 +19,10 @@
         }
     });
 })();
+
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'neoshare-theme' && e.newValue) {
+        document.documentElement.setAttribute('data-theme', e.newValue);
+    }
+});
