@@ -762,3 +762,29 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
 .upload-zone.dragover {
   animation: pulseGlow 1.5s infinite;
 }
+
+
+.file-item .file-actions {
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+.file-item:hover .file-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+  color: var(--primary);
+}
