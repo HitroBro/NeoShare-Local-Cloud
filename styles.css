@@ -751,3 +751,14 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
   color: var(--text-main);
   margin-bottom: var(--space-1);
 }
+
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.4); }
+  70% { box-shadow: 0 0 0 10px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0); }
+  100% { box-shadow: 0 0 0 0 hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0); }
+}
+
+.upload-zone.dragover {
+  animation: pulseGlow 1.5s infinite;
+}
