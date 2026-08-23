@@ -675,3 +675,11 @@ body {
 .icon-archive { color: #f97316; }
 .icon-doc { color: #3b82f6; }
 .icon-default { color: #64748b; }
+
+
+/* Theme Switch Smooth Transitions */
+body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search-box input {
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal),
+              color var(--transition-normal);
+}
