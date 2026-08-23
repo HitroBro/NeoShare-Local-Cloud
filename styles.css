@@ -663,3 +663,15 @@ body {
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 }
+
+
+/* Categorized File Extension Icons */
+.icon-folder { color: #f59e0b; }
+.icon-pdf { color: #ef4444; }
+.icon-image { color: #10b981; }
+.icon-video { color: #8b5cf6; }
+.icon-audio { color: #ec4899; }
+.icon-code { color: #06b6d4; }
+.icon-archive { color: #f97316; }
+.icon-doc { color: #3b82f6; }
+.icon-default { color: #64748b; }
