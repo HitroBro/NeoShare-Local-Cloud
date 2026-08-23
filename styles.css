@@ -683,3 +683,38 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
               border-color var(--transition-normal),
               color var(--transition-normal);
 }
+
+
+/* Theme Toggle Button Animation */
+.theme-toggle-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+}
+
+.theme-toggle-btn .sun-icon, .theme-toggle-btn .moon-icon {
+  position: absolute;
+  transition: transform var(--transition-spring), opacity var(--transition-fast);
+}
+
+[data-theme="light"] .theme-toggle-btn .sun-icon {
+  transform: translateY(-24px);
+  opacity: 0;
+}
+
+[data-theme="light"] .theme-toggle-btn .moon-icon {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+[data-theme="dark"] .theme-toggle-btn .sun-icon {
+  transform: translateY(0);
+  opacity: 1;
+  color: #f59e0b;
+}
+
+[data-theme="dark"] .theme-toggle-btn .moon-icon {
+  transform: translateY(24px);
+  opacity: 0;
+}
