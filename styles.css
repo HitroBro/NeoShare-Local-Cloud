@@ -636,3 +636,23 @@ body {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+
+/* Dark Mode Palette */
+[data-theme="dark"] {
+  --bg-app: #0b0f17;
+  --bg-surface: #131a26;
+  --bg-surface-elevated: #1a2332;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --border-subtle: #1e293b;
+  --border-strong: #334155;
+  --hover-subtle: #1e293b;
+
+  --primary-subtle: hsl(var(--primary-h), 40%, 15%);
+  --success-bg: #064e3b;
+  --warning-bg: #78350f;
+  --danger-bg: #7f1d1d;
+  --info-bg: #1e3a8a;
+}
