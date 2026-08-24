@@ -881,3 +881,8 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
 .modal-overlay.active .modal-dialog {
   animation: modalZoomIn 0.25s var(--ease-spring) forwards;
 }
+
+
+body.modal-open {
+  overflow: hidden;
+}
