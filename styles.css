@@ -831,3 +831,34 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
   justify-content: center;
   min-height: 200px;
 }
+
+
+/* Media Elements in Modal */
+.modal-body img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+.modal-body video {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: var(--radius-md);
+}
+
+.modal-body audio {
+  width: 100%;
+  margin: var(--space-4) 0;
+}
+
+.modal-body pre {
+  width: 100%;
+  max-height: 65vh;
+  overflow: auto;
+  background-color: var(--hover-subtle);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+}
