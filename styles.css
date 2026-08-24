@@ -862,3 +862,22 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.875rem;
 }
+
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalZoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-overlay.active {
+  animation: modalFadeIn 0.2s ease forwards;
+}
+
+.modal-overlay.active .modal-dialog {
+  animation: modalZoomIn 0.25s var(--ease-spring) forwards;
+}
