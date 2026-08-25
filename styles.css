@@ -941,3 +941,12 @@ body.modal-open {
 [data-theme="dark"] .app-header {
   background-color: hsla(220, 35%, 7%, 0.8);
 }
+
+
+@media (max-width: 640px) {
+  .breadcrumb-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: var(--space-2);
+  }
+}
