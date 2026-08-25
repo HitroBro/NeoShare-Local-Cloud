@@ -886,3 +886,43 @@ body, .app-header, .file-list, .file-item, .upload-zone, .btn-secondary, .search
 body.modal-open {
   overflow: hidden;
 }
+
+
+/* Breadcrumb Navigation */
+.breadcrumb-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.breadcrumb-item a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--primary);
+  background-color: var(--hover-subtle);
+}
+
+.breadcrumb-item.current {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.breadcrumb-separator {
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+}
