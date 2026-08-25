@@ -926,3 +926,18 @@ body.modal-open {
   color: var(--text-subtle);
   font-size: 0.75rem;
 }
+
+
+.app-header {
+  position: sticky;
+  top: 0;
+  background-color: hsla(0, 0%, 100%, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 50;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+[data-theme="dark"] .app-header {
+  background-color: hsla(220, 35%, 7%, 0.8);
+}
