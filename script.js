@@ -26,3 +26,21 @@ window.addEventListener('storage', (e) => {
         document.documentElement.setAttribute('data-theme', e.newValue);
     }
 });
+
+
+// Client-side Validation Helper
+function validateFiles(fileList) {
+    const MAX_SIZE = 2 * 1024 * 1024 * 1024; // 2 GB
+    if (!fileList || fileList.length === 0) {
+        return { valid: false, error: 'No files selected' };
+    }
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].size > MAX_SIZE) {
+            return {
+                valid: false,
+                error: `"${fileList[i].name}" exceeds the 2GB upload limit`
+            };
+        }
+    }
+    return { valid: true };
+}
