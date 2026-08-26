@@ -983,3 +983,22 @@ body.modal-open {
 .toast-success { border-left: 4px solid var(--success); }
 .toast-error { border-left: 4px solid var(--danger); }
 .toast-info { border-left: 4px solid var(--info); }
+
+
+@keyframes toastSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastFadeOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+.toast.show {
+  animation: toastSlideIn 0.3s var(--ease-spring) forwards;
+}
+
+.toast.hide {
+  animation: toastFadeOut 0.25s ease forwards;
+}
