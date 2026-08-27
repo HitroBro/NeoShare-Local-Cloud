@@ -1021,3 +1021,10 @@ body.modal-open {
   content-visibility: auto;
   contain-intrinsic-size: 0 52px;
 }
+
+
+/* Font-display swap */
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-display: swap;
+}
