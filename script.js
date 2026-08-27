@@ -55,3 +55,24 @@ function createDocumentFragmentFromList(items, renderCallback) {
     });
     return fragment;
 }
+
+
+// Performance Optimization Utilities
+function debounce(func, delay = 200) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+function throttle(func, limit = 100) {
+    let inThrottle;
+    return function (...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
