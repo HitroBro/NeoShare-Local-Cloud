@@ -44,3 +44,14 @@ function validateFiles(fileList) {
     }
     return { valid: true };
 }
+
+
+// Batch DOM Insertion Utility
+function createDocumentFragmentFromList(items, renderCallback) {
+    const fragment = document.createDocumentFragment();
+    items.forEach(item => {
+        const el = renderCallback(item);
+        if (el) fragment.appendChild(el);
+    });
+    return fragment;
+}
