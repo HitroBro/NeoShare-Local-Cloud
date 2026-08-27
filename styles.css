@@ -1014,3 +1014,10 @@ body.modal-open {
   animation: shakeError 0.4s ease-in-out;
   border-color: var(--danger) !important;
 }
+
+
+/* Rendering Performance for Large File Trees */
+.file-list .file-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 52px;
+}
