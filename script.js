@@ -100,3 +100,28 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
+
+
+// Keyboard list navigation helper
+function setupListKeyboardNav() {
+    const list = document.getElementById('fileList');
+    if (!list) return;
+    list.addEventListener('keydown', (e) => {
+        const items = Array.from(list.querySelectorAll('.file-item'));
+        const currentIndex = items.indexOf(document.activeElement);
+        if (currentIndex === -1) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = items[currentIndex + 1] || items[0];
+            next.focus();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = items[currentIndex - 1] || items[items.length - 1];
+            prev.focus();
+        } else if (e.key === 'Enter') {
+            const link = document.activeElement.querySelector('a');
+            if (link) link.click();
+        }
+    });
+}
