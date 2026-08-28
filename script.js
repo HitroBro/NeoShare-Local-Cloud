@@ -76,3 +76,27 @@ function throttle(func, limit = 100) {
         }
     };
 }
+
+
+// Global Keyboard Shortcuts
+window.addEventListener('keydown', (e) => {
+    // Quick search focus: "/"
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        const search = document.getElementById('searchInput');
+        if (search) search.focus();
+    }
+    // Upload trigger: "u"
+    if (e.key === 'u' && document.activeElement.tagName !== 'INPUT') {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) fileInput.click();
+    }
+    // Escape modal
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('previewModal');
+        if (modal && modal.style.display !== 'none') {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+    }
+});
