@@ -47,3 +47,28 @@ function filterEntries(entries, query) {
     const lower = query.toLowerCase();
     return entries.filter(e => e.name.toLowerCase().includes(lower));
 }
+
+
+// Sorting Engine
+function sortEntries(entries, sortBy, sortAsc) {
+    return [...entries].sort((a, b) => {
+        // Always place virtual parent '..' at top
+        if (a.name === '..') return -1;
+        if (b.name === '..') return 1;
+
+        // Directories first
+        if (a.is_dir !== b.is_dir) {
+            return a.is_dir ? -1 : 1;
+        }
+
+        let comparison = 0;
+        if (sortBy === 'name') {
+            comparison = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortBy === 'size') {
+            comparison = (a.size || 0) - (b.size || 0);
+        } else if (sortBy === 'modified') {
+            comparison = (a.modified || 0) - (b.modified || 0);
+        }
+        return sortAsc ? comparison : -comparison;
+    });
+}
