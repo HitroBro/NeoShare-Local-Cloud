@@ -241,3 +241,26 @@ window.addEventListener('popstate', (e) => {
     const path = (e.state && e.state.path) || window.location.pathname || '/';
     loadDirectory(path, false);
 });
+
+
+// Toast Notification Engine
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} show`;
+    
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+
+    toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 250);
+    }, duration);
+}
