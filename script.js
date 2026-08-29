@@ -90,3 +90,60 @@ function setViewMode(mode) {
         gridBtn.classList.toggle('active', mode === 'grid');
     }
 }
+
+
+// Media Preview Engine
+function openPreview(entry, currentPath) {
+    const modal = document.getElementById('previewModal');
+    const title = document.getElementById('previewTitle');
+    const body = document.getElementById('previewBody');
+    const download = document.getElementById('previewDownloadBtn');
+    if (!modal || !body) return;
+
+    const fileUrl = (currentPath.endsWith('/') ? currentPath : currentPath + '/') + encodeURIComponent(entry.name);
+    title.textContent = entry.name;
+    download.href = fileUrl;
+    body.innerHTML = '';
+
+    const ext = entry.name.split('.').pop().toLowerCase();
+    const images = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+    const videos = ['mp4', 'webm', 'ogg'];
+    const audios = ['mp3', 'wav', 'ogg', 'm4a', 'flac'];
+    const texts = ['txt', 'md', 'json', 'js', 'css', 'html', 'py', 'sh', 'yml', 'yaml', 'c', 'cpp', 'h'];
+
+    if (images.includes(ext)) {
+        const img = document.createElement('img');
+        img.src = fileUrl;
+        img.alt = entry.name;
+        body.appendChild(img);
+    } else if (videos.includes(ext)) {
+        const video = document.createElement('video');
+        video.src = fileUrl;
+        video.controls = true;
+        video.autoplay = true;
+        body.appendChild(video);
+    } else if (audios.includes(ext)) {
+        const audio = document.createElement('audio');
+        audio.src = fileUrl;
+        audio.controls = true;
+        audio.autoplay = true;
+        body.appendChild(audio);
+    } else if (texts.includes(ext)) {
+        fetch(fileUrl)
+            .then(res => res.text())
+            .then(text => {
+                const pre = document.createElement('pre');
+                pre.textContent = text;
+                body.appendChild(pre);
+            })
+            .catch(() => {
+                body.innerHTML = '<p class="text-danger">Failed to load text preview</p>';
+            });
+    } else {
+        body.innerHTML = `<div class="text-center"><i class="fas fa-file-alt text-4xl mb-3"></i><p>No preview available for this file type.</p></div>`;
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+}
