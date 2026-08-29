@@ -269,3 +269,12 @@ function showToast(message, type = 'info', duration = 3000) {
 window.addEventListener('unload', () => {
     // Teardown long-lived observers or workers
 });
+
+
+// Clipboard helper
+function copyFileLink(fileUrl) {
+    const fullUrl = window.location.origin + fileUrl;
+    navigator.clipboard.writeText(fullUrl)
+        .then(() => showToast('Link copied to clipboard!', 'success'))
+        .catch(() => showToast('Failed to copy link', 'error'));
+}
