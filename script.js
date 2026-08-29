@@ -264,3 +264,8 @@ function showToast(message, type = 'info', duration = 3000) {
         setTimeout(() => toast.remove(), 250);
     }, duration);
 }
+
+
+window.addEventListener('unload', () => {
+    // Teardown long-lived observers or workers
+});
