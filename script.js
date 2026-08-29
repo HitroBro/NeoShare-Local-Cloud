@@ -209,3 +209,35 @@ function setupDragAndDrop(dropZone, onDropFiles) {
         }
     });
 }
+
+
+// Asynchronous Directory Navigation
+function loadDirectory(path, pushState = true) {
+    appState.setState({ isLoading: true, currentPath: path });
+    const url = (path.endsWith('/') ? path : path + '/') + '?json=1';
+
+    return fetch(url)
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            appState.setState({
+                isLoading: false,
+                entries: data.entries || [],
+                filteredEntries: filterEntries(data.entries || [], appState.getState().searchQuery)
+            });
+            if (pushState && window.location.pathname !== path) {
+                history.pushState({ path }, '', path);
+            }
+        })
+        .catch(err => {
+            appState.setState({ isLoading: false });
+            showToast(`Error loading directory: ${err.message}`, 'error');
+        });
+}
+
+window.addEventListener('popstate', (e) => {
+    const path = (e.state && e.state.path) || window.location.pathname || '/';
+    loadDirectory(path, false);
+});
