@@ -72,3 +72,21 @@ function sortEntries(entries, sortBy, sortAsc) {
         return sortAsc ? comparison : -comparison;
     });
 }
+
+
+// View Mode Handler
+function setViewMode(mode) {
+    appState.setState({ viewMode: mode });
+    localStorage.setItem('neoshare-view-mode', mode);
+    const list = document.getElementById('fileList');
+    const listBtn = document.getElementById('viewListBtn');
+    const gridBtn = document.getElementById('viewGridBtn');
+
+    if (list) {
+        list.classList.toggle('grid-view', mode === 'grid');
+    }
+    if (listBtn && gridBtn) {
+        listBtn.classList.toggle('active', mode === 'list');
+        gridBtn.classList.toggle('active', mode === 'grid');
+    }
+}
