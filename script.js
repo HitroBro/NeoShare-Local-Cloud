@@ -1,127 +1,41 @@
-// Theme Engine Initialization
-(function initTheme() {
-    const savedTheme = localStorage.getItem('neoshare-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
+// NeoShare Reactive State Manager
+class StateManager {
+    constructor(initialState = {}) {
+        this.state = {
+            currentPath: window.location.pathname || '/',
+            entries: [],
+            filteredEntries: [],
+            searchQuery: '',
+            sortBy: 'name',
+            sortAsc: true,
+            viewMode: localStorage.getItem('neoshare-view-mode') || 'list',
+            isLoading: false,
+            ...initialState
+        };
+        this.listeners = new Map();
     }
-    
-    if (savedTheme) {
-        applyTheme(savedTheme);
-    } else {
-        applyTheme(prefersDark.matches ? 'dark' : 'light');
+
+    getState() {
+        return this.state;
     }
-    
-    prefersDark.addEventListener('change', (e) => {
-        if (!localStorage.getItem('neoshare-theme')) {
-            applyTheme(e.matches ? 'dark' : 'light');
+
+    setState(patch) {
+        this.state = { ...this.state, ...patch };
+        this.emit('change', this.state);
+    }
+
+    on(event, callback) {
+        if (!this.listeners.has(event)) {
+            this.listeners.set(event, new Set());
         }
-    });
-})();
-
-
-window.addEventListener('storage', (e) => {
-    if (e.key === 'neoshare-theme' && e.newValue) {
-        document.documentElement.setAttribute('data-theme', e.newValue);
+        this.listeners.get(event).add(callback);
+        return () => this.listeners.get(event).delete(callback);
     }
-});
 
-
-// Client-side Validation Helper
-function validateFiles(fileList) {
-    const MAX_SIZE = 2 * 1024 * 1024 * 1024; // 2 GB
-    if (!fileList || fileList.length === 0) {
-        return { valid: false, error: 'No files selected' };
-    }
-    for (let i = 0; i < fileList.length; i++) {
-        if (fileList[i].size > MAX_SIZE) {
-            return {
-                valid: false,
-                error: `"${fileList[i].name}" exceeds the 2GB upload limit`
-            };
+    emit(event, data) {
+        if (this.listeners.has(event)) {
+            this.listeners.get(event).forEach(cb => cb(data));
         }
     }
-    return { valid: true };
 }
-
-
-// Batch DOM Insertion Utility
-function createDocumentFragmentFromList(items, renderCallback) {
-    const fragment = document.createDocumentFragment();
-    items.forEach(item => {
-        const el = renderCallback(item);
-        if (el) fragment.appendChild(el);
-    });
-    return fragment;
-}
-
-
-// Performance Optimization Utilities
-function debounce(func, delay = 200) {
-    let timer;
-    return function (...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-function throttle(func, limit = 100) {
-    let inThrottle;
-    return function (...args) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-
-// Global Keyboard Shortcuts
-window.addEventListener('keydown', (e) => {
-    // Quick search focus: "/"
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
-        e.preventDefault();
-        const search = document.getElementById('searchInput');
-        if (search) search.focus();
-    }
-    // Upload trigger: "u"
-    if (e.key === 'u' && document.activeElement.tagName !== 'INPUT') {
-        const fileInput = document.getElementById('fileInput');
-        if (fileInput) fileInput.click();
-    }
-    // Escape modal
-    if (e.key === 'Escape') {
-        const modal = document.getElementById('previewModal');
-        if (modal && modal.style.display !== 'none') {
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-        }
-    }
-});
-
-
-// Keyboard list navigation helper
-function setupListKeyboardNav() {
-    const list = document.getElementById('fileList');
-    if (!list) return;
-    list.addEventListener('keydown', (e) => {
-        const items = Array.from(list.querySelectorAll('.file-item'));
-        const currentIndex = items.indexOf(document.activeElement);
-        if (currentIndex === -1) return;
-
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            const next = items[currentIndex + 1] || items[0];
-            next.focus();
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const prev = items[currentIndex - 1] || items[items.length - 1];
-            prev.focus();
-        } else if (e.key === 'Enter') {
-            const link = document.activeElement.querySelector('a');
-            if (link) link.click();
-        }
-    });
-}
+const appState = new StateManager();
