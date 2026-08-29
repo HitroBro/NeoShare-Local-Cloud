@@ -39,3 +39,11 @@ class StateManager {
     }
 }
 const appState = new StateManager();
+
+
+// Filter & Search Engine
+function filterEntries(entries, query) {
+    if (!query) return entries;
+    const lower = query.toLowerCase();
+    return entries.filter(e => e.name.toLowerCase().includes(lower));
+}
