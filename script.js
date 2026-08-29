@@ -185,3 +185,27 @@ function uploadFilesWithProgress(files, targetPath, onProgress, onSuccess, onErr
 
     xhr.send(formData);
 }
+
+
+// Drag & Drop Event Wireup
+function setupDragAndDrop(dropZone, onDropFiles) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        window.addEventListener(evt, e => e.preventDefault());
+        dropZone.addEventListener(evt, e => e.preventDefault());
+    });
+
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropZone.addEventListener(evt, () => dropZone.classList.add('dragover'));
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover'));
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+            onDropFiles(dt.files);
+        }
+    });
+}
