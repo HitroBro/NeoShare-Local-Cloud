@@ -147,3 +147,41 @@ function openPreview(entry, currentPath) {
     modal.classList.add('active');
     document.body.classList.add('modal-open');
 }
+
+
+// Upload Engine with Real-Time Progress
+function uploadFilesWithProgress(files, targetPath, onProgress, onSuccess, onError) {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', targetPath, true);
+
+    xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            onProgress(percent);
+        }
+    };
+
+    xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+                const json = JSON.parse(xhr.responseText);
+                if (onSuccess) onSuccess(json);
+            } catch (err) {
+                if (onSuccess) onSuccess({ status: 'success' });
+            }
+        } else {
+            if (onError) onError(new Error(`Upload failed with status ${xhr.status}`));
+        }
+    };
+
+    xhr.onerror = () => {
+        if (onError) onError(new Error('Network error during upload'));
+    };
+
+    xhr.send(formData);
+}
