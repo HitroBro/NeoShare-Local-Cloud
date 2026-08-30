@@ -108,3 +108,12 @@ MIT License — See [LICENSE](LICENSE) for details.
 - [async-tcp-gateway](https://github.com/HitroBro/async-tcp-gateway) — High-performance C networking
 - [HitroBro.github.io](https://github.com/HitroBro/HitroBro.github.io) — Technical portfolio with interactive demos
 - [Modern-YTDLP-GUI](https://github.com/HitroBro/Modern-YTDLP-GUI) — Desktop automation tool
+
+## GUI Redesign & Features (v1.1.0)
+
+- 🎨 **Adaptive Theme Engine** — High-contrast Dark/Light mode with automatic OS synchronization.
+- ⚡ **Real-Time Search & Multi-Column Sorting** — Instantly filter and sort directory listings by Name, Size, or Date.
+- 🖼️ **Media Preview Modal** — In-browser preview for images, video, audio playback, and syntax-highlighted text.
+- 📊 **Animated Upload Progress** — Drag & drop multipart uploads with real-time percentage progress tracking.
+- ⌨️ **Keyboard Accessibility** — Keyboard shortcuts (`/` for search, `u` for upload, `Esc` for modal, arrow navigation).
+- 📱 **Fully Responsive** — Seamlessly adapts from desktop monitors to mobile displays.
