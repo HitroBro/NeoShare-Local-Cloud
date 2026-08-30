@@ -53,5 +53,14 @@ class TestNeoShareGUI(unittest.TestCase):
             urllib.request.urlopen(url)
         self.assertEqual(ctx.exception.code, 403)
 
+
+    def test_critical_dom_elements(self):
+        with open(os.path.join(BASE_DIR, 'index.html'), 'r', encoding='utf-8') as f:
+            html = f.read()
+        self.assertIn('id="searchInput"', html)
+        self.assertIn('id="previewModal"', html)
+        self.assertIn('id="toastContainer"', html)
+        self.assertIn('id="uploadProgressContainer"', html)
+
 if __name__ == '__main__':
     unittest.main()
