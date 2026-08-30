@@ -1040,3 +1040,9 @@ button:focus:not(:focus-visible),
 a:focus:not(:focus-visible) {
   outline: none;
 }
+
+
+/* Hardware Acceleration Optimization */
+.upload-zone, .modal-dialog, .toast, .btn {
+  will-change: transform;
+}
