@@ -8,6 +8,8 @@ import datetime
 import mimetypes
 import time
 import hashlib
+import secrets
+import base64
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import unquote, urlparse, parse_qs
 from collections import defaultdict
