@@ -59,7 +59,7 @@ class FileServer(BaseHTTPRequestHandler):
     def send_unauthorized(self):
         """Send 401 Unauthorized response with WWW-Authenticate header."""
         self.send_response(401)
-        self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
+        self.send_header("WWW-Authenticate", 'Basic realm="NeoShare", charset="UTF-8"')
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", "12")
         self.end_headers()
