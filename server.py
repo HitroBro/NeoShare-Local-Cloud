@@ -31,6 +31,40 @@ AUTH_PASS = os.environ.get("NEOSHARE_PASS")
 
 
 class FileServer(BaseHTTPRequestHandler):
+    def check_auth(self):
+        """Verify HTTP Basic Auth credentials if configured."""
+        if not (AUTH_USER and AUTH_PASS):
+            return True
+        auth_header = self.headers.get("Authorization", "")
+        if not auth_header.startswith("Basic "):
+            self.send_unauthorized()
+            return False
+        try:
+            decoded = base64.b64decode(auth_header[6:]).decode("utf-8")
+            if ":" not in decoded:
+                self.send_unauthorized()
+                return False
+            user, pwd = decoded.split(":", 1)
+            # Use constant-time comparison to mitigate timing attacks
+            user_valid = secrets.compare_digest(user, AUTH_USER)
+            pwd_valid = secrets.compare_digest(pwd, AUTH_PASS)
+            if not (user_valid and pwd_valid):
+                self.send_unauthorized()
+                return False
+            return True
+        except Exception:
+            self.send_unauthorized()
+            return False
+
+    def send_unauthorized(self):
+        """Send 401 Unauthorized response with WWW-Authenticate header."""
+        self.send_response(401)
+        self.send_header("WWW-Authenticate", 'Basic realm="NeoShare", charset="UTF-8"')
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", "12")
+        self.end_headers()
+        self.wfile.write(b"Unauthorized")
+
     def do_GET(self):
         # Parse URL path and query parameters
         parsed = urlparse(self.path)
