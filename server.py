@@ -66,6 +66,10 @@ class FileServer(BaseHTTPRequestHandler):
         self.wfile.write(b"Unauthorized")
 
     def do_GET(self):
+        # Enforce authentication on all GET requests
+        if not self.check_auth():
+            return
+
         # Parse URL path and query parameters
         parsed = urlparse(self.path)
         rel = unquote(parsed.path.lstrip("/"))
