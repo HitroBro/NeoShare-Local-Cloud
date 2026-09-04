@@ -107,28 +107,9 @@ class FileServer(BaseHTTPRequestHandler):
         self.send_error(404, "Not Found")
 
     def do_POST(self):
-        # Basic Auth check
-        if AUTH_USER and AUTH_PASS:
-            auth_header = self.headers.get("Authorization", "")
-            if not auth_header.startswith("Basic "):
-                self.send_response(401)
-                self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
-                self.end_headers()
-                return
-            import base64
-            try:
-                decoded = base64.b64decode(auth_header[6:]).decode()
-                user, pwd = decoded.split(":", 1)
-                if user != AUTH_USER or pwd != AUTH_PASS:
-                    self.send_response(401)
-                    self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
-                    self.end_headers()
-                    return
-            except Exception:
-                self.send_response(401)
-                self.send_header("WWW-Authenticate", 'Basic realm="NeoShare"')
-                self.end_headers()
-                return
+        # Enforce authentication on POST requests
+        if not self.check_auth():
+            return
 
         # Rate limiting check
         client_ip = self.client_address[0]
