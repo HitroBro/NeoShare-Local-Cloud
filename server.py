@@ -170,7 +170,7 @@ class FileServer(BaseHTTPRequestHandler):
             current_path = None
             if filename:
                 safe = os.path.basename(filename).strip()
-                if safe and not safe.startswith('.'):
+                if safe:
                     current_path = os.path.join(target_dir, safe) # path sanitization
                     current_file = open(current_path, "wb", buffering=64*1024)
                     uploaded_files.append(safe)
