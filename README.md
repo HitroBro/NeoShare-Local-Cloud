@@ -31,7 +31,7 @@ graph TD
 | **ThreadingHTTPServer** | One thread per connection, non-blocking |
 | **NeoShareHandler** | Custom request handler (GET, POST, HEAD) |
 | **Path Sanitizer** | Directory traversal prevention |
-| **Multipart Parser** | Streaming upload handling |
+| **Streaming Multipart Parser** | True chunked disk streaming (O(1) RAM usage) |
 | **Range Handler** | HTTP Range support for video streaming |
 | **Archive Generator** | Streaming tar.gz for directory downloads |
 
