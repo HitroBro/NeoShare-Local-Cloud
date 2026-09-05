@@ -531,3 +531,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n🛑 Server stopped by user")
         httpd.shutdown()
+
+# Verified streaming upload engine v1.2.0
