@@ -88,7 +88,7 @@ Environment variables:
 
 ```bash
 PORT=8000                    # Server port (default: 8000)
-MAX_UPLOAD_SIZE=2147483648   # 2GB in bytes
+MAX_UPLOAD_SIZE=2147483648   # 2GB in bytes (processed via streaming chunks)
 BASE_DIR=/path/to/share      # Root directory to serve
 ```
 
