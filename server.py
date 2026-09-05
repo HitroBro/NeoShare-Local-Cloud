@@ -172,7 +172,7 @@ class FileServer(BaseHTTPRequestHandler):
                 safe = os.path.basename(filename)
                 if safe:
                     current_path = os.path.join(target_dir, safe)
-                    current_file = open(current_path, "wb")
+                    current_file = open(current_path, "wb", buffering=64*1024)
                     uploaded_files.append(safe)
 
             marker = b"\r\n" + dash_boundary
