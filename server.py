@@ -267,7 +267,7 @@ class FileServer(BaseHTTPRequestHandler):
         try:
             uploaded_files = self.parse_streaming_multipart(length, boundary, target)
         except Exception as e:
-            self.log_message("Upload error: %s", str(e))
+            self.log_message("Upload streaming exception: %s", str(e))
             return self.send_error(500, f"Upload processing error: {str(e)}")
 
         # Return upload result as JSON for frontend consumption
