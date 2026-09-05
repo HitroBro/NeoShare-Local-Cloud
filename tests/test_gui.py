@@ -85,5 +85,29 @@ class TestNeoShareGUI(unittest.TestCase):
             server.AUTH_USER = None
             server.AUTH_PASS = None
 
+
+    def test_streaming_multipart_upload(self):
+        url = f'http://127.0.0.1:{self.port}/'
+        boundary = "---------------------------974767299852498929531610575"
+        body = (
+            f"--{boundary}\r\n"
+            'Content-Disposition: form-data; name="file"; filename="test_stream.txt"\r\n'
+            "Content-Type: text/plain\r\n\r\n"
+            "Streaming upload test content verified!\r\n"
+            f"--{boundary}--\r\n"
+        ).encode('utf-8')
+
+        req = urllib.request.Request(url, data=body, method='POST')
+        req.add_header('Content-Type', f'multipart/form-data; boundary={boundary}')
+        with urllib.request.urlopen(req) as res:
+            self.assertEqual(res.status, 200)
+            data = json.loads(res.read().decode('utf-8'))
+            self.assertIn("test_stream.txt", data.get("uploaded_files", []))
+
+        # Cleanup uploaded test file
+        test_file_path = os.path.join(BASE_DIR, "test_stream.txt")
+        if os.path.exists(test_file_path):
+            os.remove(test_file_path)
+
 if __name__ == '__main__':
     unittest.main()
