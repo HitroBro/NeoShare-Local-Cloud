@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Hard cap for uploads to reduce memory/DoS risk
 MAX_UPLOAD_SIZE = 2 * 1024 * 1024 * 1024  # 2 GB
-STREAM_CHUNK_SIZE = 64 * 1024  # 64 KB streaming buffer
+STREAM_CHUNK_SIZE = 32 * 1024  # 64 KB streaming buffer
 
 # Rate limiting: per-IP upload tracking
 UPLOAD_RATE_LIMIT = defaultdict(list)  # IP -> list of timestamps
