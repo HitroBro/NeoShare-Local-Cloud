@@ -104,7 +104,7 @@ class TestNeoShareGUI(unittest.TestCase):
             data = json.loads(res.read().decode('utf-8'))
             self.assertIn("test_stream.txt", data.get("uploaded_files", []))
 
-        # Cleanup uploaded test file
+        # Verify uploaded content and cleanup test file
         test_file_path = os.path.join(BASE_DIR, "test_stream.txt")
         if os.path.exists(test_file_path):
             os.remove(test_file_path)
