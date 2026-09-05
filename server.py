@@ -258,42 +258,15 @@ class FileServer(BaseHTTPRequestHandler):
             return self.send_error(400, "Expected multipart/form-data")
 
         try:
-            boundary = ctype.split("boundary=", 1)[1].encode()
-            data = self.rfile.read(length)
+            boundary = ctype.split("boundary=", 1)[1].strip().strip('"').encode()
         except Exception:
-            return self.send_error(500, "Upload Read Error")
+            return self.send_error(400, "Malformed boundary in Content-Type")
 
-        # Split multipart body into parts and write each uploaded file to disk
-        parts = data.split(b"--" + boundary)
-        uploaded_files = []
-
-        for part in parts:
-            if b"Content-Disposition" not in part:
-                continue
-            try:
-                header, body = part.split(b"\r\n\r\n", 1)
-                header = header.decode(errors="ignore")
-                if 'filename="' not in header:
-                    continue
-
-                fname = header.split('filename="', 1)[1].split('"', 1)[0]
-                if not fname:
-                    continue
-
-                # Prevent client-controlled paths by keeping only the base filename
-                safe = os.path.basename(fname)
-
-                # Strip multipart trailing CRLF
-                body = body.rsplit(b"\r\n", 1)[0]
-
-                file_path = os.path.join(target, safe)
-                with open(file_path, "wb") as f:
-                    f.write(body)
-
-                uploaded_files.append(safe)
-            except Exception as e:
-                print(f"Upload error: {e}")
-                continue
+        try:
+            uploaded_files = self.parse_streaming_multipart(length, boundary, target)
+        except Exception as e:
+            self.log_message("Upload error: %s", str(e))
+            return self.send_error(500, f"Upload processing error: {str(e)}")
 
         # Return upload result as JSON for frontend consumption
         response_data = {
