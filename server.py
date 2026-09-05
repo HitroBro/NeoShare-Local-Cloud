@@ -107,6 +107,113 @@ class FileServer(BaseHTTPRequestHandler):
 
         self.send_error(404, "Not Found")
 
+    def parse_streaming_multipart(self, length, boundary, target_dir):
+        """Stream multipart form data directly to disk without buffering in RAM."""
+        dash_boundary = b"--" + boundary
+        uploaded_files = []
+        bytes_left = length
+
+        def read_bytes(n):
+            nonlocal bytes_left
+            to_read = min(n, bytes_left)
+            if to_read <= 0:
+                return b""
+            chunk = self.rfile.read(to_read)
+            bytes_left -= len(chunk)
+            return chunk
+
+        buffer = b""
+        def read_line():
+            nonlocal buffer
+            while b"\r\n" not in buffer and bytes_left > 0:
+                chunk = read_bytes(STREAM_CHUNK_SIZE)
+                if not chunk:
+                    break
+                buffer += chunk
+            if b"\r\n" in buffer:
+                line, buffer = buffer.split(b"\r\n", 1)
+                return line
+            line, buffer = buffer, b""
+            return line
+
+        # 1. Skip to initial boundary delimiter
+        first_line = read_line()
+        while first_line and dash_boundary not in first_line:
+            first_line = read_line()
+
+        if not first_line or first_line.endswith(b"--"):
+            return uploaded_files
+
+        # 2. Process sequential multipart sections
+        while True:
+            headers = {}
+            while True:
+                hline = read_line()
+                if not hline:
+                    break
+                try:
+                    htext = hline.decode("utf-8", errors="ignore")
+                    if ":" in htext:
+                        k, v = htext.split(":", 1)
+                        headers[k.strip().lower()] = v.strip()
+                except Exception:
+                    pass
+
+            disp = headers.get("content-disposition", "")
+            filename = None
+            if 'filename="' in disp:
+                filename = disp.split('filename="', 1)[1].split('"', 1)[0]
+
+            current_file = None
+            current_path = None
+            if filename:
+                safe = os.path.basename(filename)
+                if safe:
+                    current_path = os.path.join(target_dir, safe)
+                    current_file = open(current_path, "wb")
+                    uploaded_files.append(safe)
+
+            marker = b"\r\n" + dash_boundary
+            marker_len = len(marker)
+
+            while True:
+                while len(buffer) < marker_len + 4 and bytes_left > 0:
+                    chunk = read_bytes(STREAM_CHUNK_SIZE)
+                    if not chunk:
+                        break
+                    buffer += chunk
+
+                idx = buffer.find(marker)
+                if idx != -1:
+                    body_chunk = buffer[:idx]
+                    if current_file:
+                        current_file.write(body_chunk)
+                        current_file.close()
+                        current_file = None
+
+                    buffer = buffer[idx + marker_len:]
+                    if buffer.startswith(b"--"):
+                        read_bytes(bytes_left)
+                        return uploaded_files
+                    if buffer.startswith(b"\r\n"):
+                        buffer = buffer[2:]
+                    break
+                else:
+                    if bytes_left == 0:
+                        if current_file:
+                            current_file.write(buffer)
+                            current_file.close()
+                            current_file = None
+                        return uploaded_files
+
+                    safe_len = len(buffer) - marker_len
+                    if safe_len > 0:
+                        if current_file:
+                            current_file.write(buffer[:safe_len])
+                        buffer = buffer[safe_len:]
+
+        return uploaded_files
+
     def do_POST(self):
         # Enforce authentication on POST requests
         if not self.check_auth():
