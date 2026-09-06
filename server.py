@@ -504,6 +504,7 @@ class FileServer(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(html_data)))
             self.send_header("Cache-Control", "no-cache")
+            self.send_security_headers()
             self.end_headers()
             self.wfile.write(html_data)
         except Exception as e:
