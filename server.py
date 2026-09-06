@@ -78,7 +78,7 @@ class FileServer(BaseHTTPRequestHandler):
 
         # Resolve requested path and block directory traversal attempts
         serve_root = os.path.abspath(self.server.serve_root)
-        target_path = os.path.abspath(os.path.join(serve_root, rel))
+        target_path = os.path.realpath(os.path.join(serve_root, rel))
         if not target_path.startswith(serve_root):
             self.log_message("SECURITY ALERT: Path traversal attempt blocked: %s", rel)
             return self.send_error(403, "Forbidden: Access Denied")
