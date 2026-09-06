@@ -607,4 +607,4 @@ if __name__ == "__main__":
         print("\n🛑 Server stopped by user")
         httpd.shutdown()
 
-# Verified streaming upload engine v1.2.0
+# Security hardened and symlink safe v1.2.0
