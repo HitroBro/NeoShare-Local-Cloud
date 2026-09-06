@@ -109,5 +109,15 @@ class TestNeoShareGUI(unittest.TestCase):
         if os.path.exists(test_file_path):
             os.remove(test_file_path)
 
+
+    def test_do_head_method(self):
+        url = f'http://127.0.0.1:{self.port}/styles.css'
+        req = urllib.request.Request(url, method='HEAD')
+        with urllib.request.urlopen(req) as res:
+            self.assertEqual(res.status, 200)
+            self.assertEqual(res.headers.get('Content-Type'), 'text/css')
+            self.assertTrue(int(res.headers.get('Content-Length', 0)) > 0)
+            self.assertEqual(res.read(), b'')
+
 if __name__ == '__main__':
     unittest.main()
