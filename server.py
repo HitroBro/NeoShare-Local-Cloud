@@ -250,8 +250,12 @@ class FileServer(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         rel = unquote(parsed.path.lstrip("/"))
         serve_root = os.path.abspath(self.server.serve_root)
-        target = os.path.abspath(os.path.join(serve_root, rel))
-        if not target.startswith(serve_root):
+        target = os.path.realpath(os.path.join(serve_root, rel))
+        try:
+            common = os.path.commonpath([serve_root, target])
+        except ValueError:
+            common = ''
+        if common != serve_root:
             return self.send_error(403, "Forbidden")
 
         # Uploads are only allowed into existing directories
