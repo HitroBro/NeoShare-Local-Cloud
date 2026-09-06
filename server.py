@@ -403,7 +403,7 @@ class FileServer(BaseHTTPRequestHandler):
 
                 disp = "attachment" if self.should_download(mime_type) else "inline"
                 self.send_header("Content-Disposition", f'{disp}; filename="{filename}"')
-
+                self.send_security_headers()
                 self.end_headers()
 
                 while True:
