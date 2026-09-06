@@ -32,7 +32,7 @@ AUTH_PASS = os.environ.get("NEOSHARE_PASS")
 
 
 class FileServer(BaseHTTPRequestHandler):
-    def check_auth(self):
+    def check_auth(self) -> bool:
         """Verify HTTP Basic Auth credentials if configured."""
         if not (AUTH_USER and AUTH_PASS):
             return True
