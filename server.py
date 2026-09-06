@@ -220,7 +220,7 @@ class FileServer(BaseHTTPRequestHandler):
 
         return uploaded_files
 
-    def send_security_headers(self):
+    def send_security_headers(self) -> None:
         """Send baseline OWASP security headers on all responses."""
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "SAMEORIGIN")
