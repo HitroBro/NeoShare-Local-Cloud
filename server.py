@@ -291,7 +291,12 @@ class FileServer(BaseHTTPRequestHandler):
                 del UPLOAD_RATE_LIMIT[ip]
         if len(UPLOAD_RATE_LIMIT[client_ip]) >= RATE_LIMIT_MAX_REQUESTS:
             self.log_message("RATE LIMIT: Upload rejected for %s (too many requests)", client_ip)
-            return self.send_error(429, "Too Many Requests")
+            self.send_response(429)
+            self.send_header("Retry-After", str(RATE_LIMIT_WINDOW))
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"Too Many Requests - Upload rate limit exceeded")
+            return
         UPLOAD_RATE_LIMIT[client_ip].append(now)
 
         # Validate Content-Length (required for safe read sizing)
