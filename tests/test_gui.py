@@ -119,5 +119,13 @@ class TestNeoShareGUI(unittest.TestCase):
             self.assertTrue(int(res.headers.get('Content-Length', 0)) > 0)
             self.assertEqual(res.read(), b'')
 
+
+    def test_security_headers_present(self):
+        url = f'http://127.0.0.1:{self.port}/'
+        with urllib.request.urlopen(url) as res:
+            self.assertEqual(res.headers.get('X-Content-Type-Options'), 'nosniff')
+            self.assertEqual(res.headers.get('X-Frame-Options'), 'SAMEORIGIN')
+            self.assertEqual(res.headers.get('Referrer-Policy'), 'strict-origin-when-cross-origin')
+
 if __name__ == '__main__':
     unittest.main()
