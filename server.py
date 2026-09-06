@@ -220,6 +220,55 @@ class FileServer(BaseHTTPRequestHandler):
 
         return uploaded_files
 
+    def do_HEAD(self):
+        """Handle HEAD requests by sending identical headers as GET without body."""
+        if not self.check_auth():
+            return
+        parsed = urlparse(self.path)
+        rel = unquote(parsed.path.lstrip("/"))
+        serve_root = os.path.realpath(self.server.serve_root)
+        target_path = os.path.realpath(os.path.join(serve_root, rel))
+
+        try:
+            common = os.path.commonpath([serve_root, target_path])
+        except ValueError:
+            common = ''
+        if common != serve_root:
+            return self.send_error(403, "Forbidden: Access Denied")
+
+        fs = target_path
+        if rel in ("index.html", "styles.css", "script.js"):
+            path = os.path.join(BASE_DIR, rel)
+            mime = "text/plain"
+            if path.endswith(".css"): mime = "text/css"
+            elif path.endswith(".js"): mime = "application/javascript"
+            elif path.endswith(".html"): mime = "text/html"
+            self.send_response(200)
+            self.send_header("Content-Type", mime)
+            self.send_header("Content-Length", str(os.path.getsize(path)))
+            self.send_security_headers()
+            self.end_headers()
+            return
+
+        if os.path.isfile(fs):
+            mime_type, _ = mimetypes.guess_type(fs)
+            self.send_response(200)
+            self.send_header("Content-Type", mime_type or "application/octet-stream")
+            self.send_header("Content-Length", str(os.path.getsize(fs)))
+            self.send_header("Accept-Ranges", "bytes")
+            self.send_security_headers()
+            self.end_headers()
+            return
+
+        if os.path.isdir(fs):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_security_headers()
+            self.end_headers()
+            return
+
+        self.send_error(404, "Not Found")
+
     def do_POST(self):
         # Enforce authentication on POST requests
         if not self.check_auth():
