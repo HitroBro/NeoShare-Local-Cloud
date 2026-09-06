@@ -32,7 +32,7 @@ If you prefer, you may open a GitHub issue with the `security` label. However, f
 
 This project implements the following security measures:
 
-- **Path Traversal Protection:** Double normalization + prefix check (`os.path.abspath()` + `startswith()`)
+- **Path Traversal Protection:** Canonical path resolution + commonpath verification (`os.path.realpath()` + `os.path.commonpath()`)
 - **Upload Size Limit:** Hard 2GB cap enforced before reading request body
 - **No Directory Traversal:** Chroot-like behavior restricting access to serve root
 - **MIME Type Validation:** Safe default for unknown file types
