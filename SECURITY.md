@@ -46,3 +46,4 @@ This policy applies to the NeoShare-Local-Cloud server code (`server.py`) only. 
 
 We thank all security researchers who responsibly disclose vulnerabilities.
 - **Constant-Time Auth:** Timing-attack immune basic authentication (`secrets.compare_digest()`)
+- **Security Headers:** Enforced `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy`
