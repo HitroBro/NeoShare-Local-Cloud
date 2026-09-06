@@ -283,8 +283,12 @@ class FileServer(BaseHTTPRequestHandler):
         # Rate limiting check
         client_ip = self.client_address[0]
         now = time.time()
-        # Clean old timestamps
-        UPLOAD_RATE_LIMIT[client_ip] = [ts for ts in UPLOAD_RATE_LIMIT[client_ip] if now - ts < RATE_LIMIT_WINDOW]
+        # Clean old timestamps and remove inactive IPs
+        active_ips = [ip for ip in list(UPLOAD_RATE_LIMIT.keys())]
+        for ip in active_ips:
+            UPLOAD_RATE_LIMIT[ip] = [ts for ts in UPLOAD_RATE_LIMIT[ip] if now - ts < RATE_LIMIT_WINDOW]
+            if not UPLOAD_RATE_LIMIT[ip]:
+                del UPLOAD_RATE_LIMIT[ip]
         if len(UPLOAD_RATE_LIMIT[client_ip]) >= RATE_LIMIT_MAX_REQUESTS:
             self.log_message("RATE LIMIT: Upload rejected for %s (too many requests)", client_ip)
             return self.send_error(429, "Too Many Requests")
