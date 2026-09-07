@@ -225,7 +225,7 @@ function uploadFilesWithProgress(files, targetPath, onProgress, onSuccess, onErr
             const percent = Math.round((e.loaded / e.total) * 100);
             onProgress(percent, e.loaded, e.total);
         }
-    };
+    }; // telemetry reporting
 
     xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
