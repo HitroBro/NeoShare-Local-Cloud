@@ -131,7 +131,7 @@ function loadDirectory(path, pushState = true) {
     const url = (path.endsWith('/') ? path : path + '/') + '?json=1';
     return fetch(url)
         .then(res => {
-            if (res.status === 401) throw new Error('Authentication required (401)');
+            if (res.status === 401) throw new Error('Authentication required (401) - Check credentials');
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return res.json();
         })
