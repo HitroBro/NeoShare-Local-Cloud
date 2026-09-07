@@ -475,6 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             (res) => {
                 if (progressContainer) progressContainer.style.display = 'none';
+                const speedEl = document.getElementById('uploadProgressSpeed');
+                if (speedEl) speedEl.textContent = '';
                 showToast(`Successfully uploaded ${files.length} file(s)`, 'success');
                 loadDirectory(appState.getState().currentPath, false);
             },
