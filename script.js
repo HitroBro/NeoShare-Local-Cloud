@@ -1,3 +1,307 @@
+// Reactive State Manager
+class StateManager {
+    constructor(initialState = {}) {
+        this.state = {
+            currentPath: window.location.pathname || '/',
+            entries: [],
+            filteredEntries: [],
+            searchQuery: '',
+            sortBy: 'name',
+            sortAsc: true,
+            viewMode: localStorage.getItem('neoshare-view-mode') || 'list',
+            isLoading: false,
+            ...initialState
+        };
+        this.listeners = new Map();
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    setState(patch) {
+        this.state = { ...this.state, ...patch };
+        this.emit('change', this.state);
+    }
+
+    on(event, callback) {
+        if (!this.listeners.has(event)) {
+            this.listeners.set(event, new Set());
+        }
+        this.listeners.get(event).add(callback);
+        return () => this.listeners.get(event).delete(callback);
+    }
+
+    emit(event, data) {
+        if (this.listeners.has(event)) {
+            this.listeners.get(event).forEach(cb => cb(data));
+        }
+    }
+}
+const appState = new StateManager();
+
+// Performance Optimization Utilities
+function debounce(func, delay = 200) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Client-side Validation Helper
+function validateFiles(fileList) {
+    const MAX_SIZE = 2 * 1024 * 1024 * 1024; // 2 GB
+    if (!fileList || fileList.length === 0) {
+        return { valid: false, error: 'No files selected' };
+    }
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].size > MAX_SIZE) {
+            return {
+                valid: false,
+                error: `"${fileList[i].name}" exceeds the 2GB upload limit`
+            };
+        }
+    }
+    return { valid: true };
+}
+
+// Filter & Search Engine
+function filterEntries(entries, query) {
+    if (!query) return entries;
+    const lower = query.toLowerCase();
+    return entries.filter(e => e.name.toLowerCase().includes(lower));
+}
+
+// Sorting Engine
+function sortEntries(entries, sortBy, sortAsc) {
+    return [...entries].sort((a, b) => {
+        if (a.name === '..') return -1;
+        if (b.name === '..') return 1;
+        if (a.is_dir !== b.is_dir) {
+            return a.is_dir ? -1 : 1;
+        }
+        let comparison = 0;
+        if (sortBy === 'name') {
+            comparison = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortBy === 'size') {
+            comparison = (a.size || 0) - (b.size || 0);
+        } else if (sortBy === 'modified') {
+            comparison = (a.modified || 0) - (b.modified || 0);
+        }
+        return sortAsc ? comparison : -comparison;
+    });
+}
+
+// View Mode Handler
+function setViewMode(mode) {
+    appState.setState({ viewMode: mode });
+    localStorage.setItem('neoshare-view-mode', mode);
+    const list = document.getElementById('fileList');
+    const listBtn = document.getElementById('viewListBtn');
+    const gridBtn = document.getElementById('viewGridBtn');
+    if (list) list.classList.toggle('grid-view', mode === 'grid');
+    if (listBtn && gridBtn) {
+        listBtn.classList.toggle('active', mode === 'list');
+        gridBtn.classList.toggle('active', mode === 'grid');
+    }
+}
+
+// Toast Notification Engine
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} show`;
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+    toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 250);
+    }, duration);
+}
+
+// Directory Loader
+function loadDirectory(path, pushState = true) {
+    appState.setState({ isLoading: true, currentPath: path });
+    const url = (path.endsWith('/') ? path : path + '/') + '?json=1';
+    return fetch(url)
+        .then(res => {
+            if (res.status === 401) throw new Error('Authentication required (401)');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            appState.setState({
+                isLoading: false,
+                entries: data.entries || [],
+                filteredEntries: filterEntries(data.entries || [], appState.getState().searchQuery)
+            });
+            if (pushState && window.location.pathname !== path) {
+                history.pushState({ path }, '', path);
+            }
+        })
+        .catch(err => {
+            appState.setState({ isLoading: false });
+            const msg = err.message.includes('401') 
+                ? 'Authentication required. Please refresh and enter credentials.' 
+                : `Error loading directory: ${err.message}`;
+            showToast(msg, 'error');
+        });
+}
+
+// Media Preview Engine
+function openPreview(entry, currentPath) {
+    const modal = document.getElementById('previewModal');
+    const title = document.getElementById('previewTitle');
+    const body = document.getElementById('previewBody');
+    const download = document.getElementById('previewDownloadBtn');
+    if (!modal || !body) return;
+
+    const fileUrl = (currentPath.endsWith('/') ? currentPath : currentPath + '/') + encodeURIComponent(entry.name);
+    title.textContent = entry.name;
+    download.href = fileUrl;
+    body.innerHTML = '';
+
+    const ext = entry.name.split('.').pop().toLowerCase();
+    const images = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+    const videos = ['mp4', 'webm', 'ogg'];
+    const audios = ['mp3', 'wav', 'ogg', 'm4a', 'flac'];
+    const texts = ['txt', 'md', 'json', 'js', 'css', 'html', 'py', 'sh', 'yml', 'yaml', 'c', 'cpp', 'h'];
+
+    if (images.includes(ext)) {
+        const img = document.createElement('img');
+        img.src = fileUrl;
+        img.alt = entry.name;
+        body.appendChild(img);
+    } else if (videos.includes(ext)) {
+        const video = document.createElement('video');
+        video.src = fileUrl;
+        video.controls = true;
+        video.autoplay = true;
+        body.appendChild(video);
+    } else if (audios.includes(ext)) {
+        const audio = document.createElement('audio');
+        audio.src = fileUrl;
+        audio.controls = true;
+        audio.autoplay = true;
+        body.appendChild(audio);
+    } else if (texts.includes(ext)) {
+        fetch(fileUrl)
+            .then(res => res.text())
+            .then(text => {
+                const pre = document.createElement('pre');
+                pre.textContent = text;
+                body.appendChild(pre);
+            })
+            .catch(() => {
+                body.innerHTML = '<p class="text-danger">Failed to load text preview</p>';
+            });
+    } else {
+        body.innerHTML = `<div class="text-center"><i class="fas fa-file-alt text-4xl mb-3"></i><p>No preview available for this file type.</p></div>`;
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+}
+
+// Upload Engine with Real-Time Progress & Telemetry
+function uploadFilesWithProgress(files, targetPath, onProgress, onSuccess, onError) {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', targetPath, true);
+
+    xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            onProgress(percent, e.loaded, e.total);
+        }
+    };
+
+    xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+                const json = JSON.parse(xhr.responseText);
+                if (onSuccess) onSuccess(json);
+            } catch (err) {
+                if (onSuccess) onSuccess({ status: 'success' });
+            }
+        } else {
+            if (onError) onError(new Error(`Upload failed with status ${xhr.status}`));
+        }
+    };
+
+    xhr.onerror = () => {
+        if (onError) onError(new Error('Network error during upload'));
+    };
+
+    xhr.send(formData);
+}
+
+// Drag & Drop Setup
+function setupDragAndDrop(dropZone, onDropFiles) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        window.addEventListener(evt, e => e.preventDefault());
+        dropZone.addEventListener(evt, e => e.preventDefault());
+    });
+
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropZone.addEventListener(evt, () => dropZone.classList.add('dragover'));
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover'));
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+            onDropFiles(dt.files);
+        }
+    });
+}
+
+// Keyboard list navigation helper
+function setupListKeyboardNav() {
+    const list = document.getElementById('fileList');
+    if (!list) return;
+    list.addEventListener('keydown', (e) => {
+        const items = Array.from(list.querySelectorAll('.file-item'));
+        const currentIndex = items.indexOf(document.activeElement);
+        if (currentIndex === -1) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = items[currentIndex + 1] || items[0];
+            next.focus();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = items[currentIndex - 1] || items[items.length - 1];
+            prev.focus();
+        } else if (e.key === 'Enter') {
+            const link = document.activeElement.querySelector('a');
+            if (link) link.click();
+        }
+    });
+}
+
+// Clipboard helper
+function copyFileLink(fileUrl) {
+    const fullUrl = window.location.origin + fileUrl;
+    navigator.clipboard.writeText(fullUrl)
+        .then(() => showToast('Link copied to clipboard!', 'success'))
+        .catch(() => showToast('Failed to copy link', 'error'));
+}
+
+
 /**
  * NeoShare File Server - Modern Web GUI v1.1.0
  */
