@@ -127,5 +127,11 @@ class TestNeoShareGUI(unittest.TestCase):
             self.assertEqual(res.headers.get('X-Frame-Options'), 'SAMEORIGIN')
             self.assertEqual(res.headers.get('Referrer-Policy'), 'strict-origin-when-cross-origin')
 
+
+    def test_upload_speed_badge_in_dom(self):
+        with open(os.path.join(BASE_DIR, 'index.html'), 'r', encoding='utf-8') as f:
+            html = f.read()
+        self.assertIn('id="uploadProgressSpeed"', html)
+
 if __name__ == '__main__':
     unittest.main()
