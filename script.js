@@ -457,12 +457,21 @@ document.addEventListener('DOMContentLoaded', () => {
             progressText.textContent = '0%';
         }
 
+        let startTime = Date.now();
         uploadFilesWithProgress(
             files,
             appState.getState().currentPath,
-            (percent) => {
+            (percent, loaded, total) => {
                 if (progressBar) progressBar.style.width = percent + '%';
                 if (progressText) progressText.textContent = percent + '%';
+                const speedEl = document.getElementById('uploadProgressSpeed');
+                if (speedEl && loaded && startTime) {
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    if (elapsed > 0.5) {
+                        const speed = loaded / elapsed; // bytes/sec
+                        speedEl.textContent = formatFileSize(speed) + '/s';
+                    }
+                }
             },
             (res) => {
                 if (progressContainer) progressContainer.style.display = 'none';
