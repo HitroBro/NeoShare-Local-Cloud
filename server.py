@@ -582,7 +582,7 @@ if __name__ == "__main__":
     except ValueError:
         default_port = 8000
     default_host = os.environ.get("HOST", "0.0.0.0")
-    default_root = os.environ.get("BASE_DIR", os.getcwd())
+    default_root = os.path.realpath(os.environ.get("BASE_DIR", os.getcwd()))
 
     parser = argparse.ArgumentParser(description="NeoShare - Modern File Server v1.2.0")
     parser.add_argument("pos_port", nargs="?", type=int, default=None, help="Port to listen on (positional)")
