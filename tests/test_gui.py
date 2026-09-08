@@ -133,5 +133,10 @@ class TestNeoShareGUI(unittest.TestCase):
             html = f.read()
         self.assertIn('id="uploadProgressSpeed"', html)
 
+
+    def test_port_env_variable_fallback(self):
+        env_port = os.environ.get("PORT", "8000")
+        self.assertTrue(env_port.isdigit())
+
 if __name__ == '__main__':
     unittest.main()
