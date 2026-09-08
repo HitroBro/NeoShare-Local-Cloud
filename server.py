@@ -598,8 +598,8 @@ if __name__ == "__main__":
         raise SystemExit(1)
 
     # ThreadingHTTPServer allows concurrent clients
-    httpd = ThreadingHTTPServer((args.host, args.port), FileServer)
-    httpd.serve_root = os.path.abspath(args.root)
+    httpd = ThreadingHTTPServer((host, port), FileServer)
+    httpd.serve_root = os.path.realpath(root)
 
     print("=" * 50)
     print("🚀 NeoShare File Server (Threaded + Hardened)")
