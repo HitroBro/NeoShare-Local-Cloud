@@ -577,7 +577,10 @@ class FileServer(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     # CLI arguments: root directory, host binding, port
-    default_port = int(os.environ.get("PORT", 8000))
+    try:
+        default_port = int(os.environ.get("PORT", 8000))
+    except ValueError:
+        default_port = 8000
     default_host = os.environ.get("HOST", "0.0.0.0")
     default_root = os.environ.get("BASE_DIR", os.getcwd())
 
