@@ -51,8 +51,9 @@ cd NeoShare-Local-Cloud
 # Run (no dependencies!)
 python server.py
 
-# Custom port
+# Custom port (positional or flag)
 python server.py 9000
+python server.py -p 9000
 # Or via environment
 PORT=9000 python server.py
 ```
