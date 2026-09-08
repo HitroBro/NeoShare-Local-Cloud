@@ -577,11 +577,20 @@ class FileServer(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     # CLI arguments: root directory, host binding, port
-    parser = argparse.ArgumentParser(description="NeoShare - Modern File Server")
-    parser.add_argument("-r", "--root", default=os.getcwd(), help="Directory to serve (default: current directory)")
-    parser.add_argument("-p", "--port", type=int, default=8000, help="Port to listen on (default: 8000)")
-    parser.add_argument("--host", default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
+    default_port = int(os.environ.get("PORT", 8000))
+    default_host = os.environ.get("HOST", "0.0.0.0")
+    default_root = os.environ.get("BASE_DIR", os.getcwd())
+
+    parser = argparse.ArgumentParser(description="NeoShare - Modern File Server v1.2.0")
+    parser.add_argument("pos_port", nargs="?", type=int, default=None, help="Port to listen on (positional)")
+    parser.add_argument("-r", "--root", default=default_root, help="Directory to serve")
+    parser.add_argument("-p", "--port", type=int, default=None, help="Port to listen on (optional flag)")
+    parser.add_argument("--host", default=default_host, help="Host to bind to")
     args = parser.parse_args()
+
+    port = args.port or args.pos_port or default_port
+    host = args.host
+    root = args.root
 
     # Ensure the serving root exists
     if not os.path.isdir(args.root):
