@@ -4,6 +4,7 @@ import urllib.request
 import urllib.error
 import json
 import base64
+import gzip
 import threading
 from http.server import ThreadingHTTPServer
 from server import FileServer, BASE_DIR
@@ -137,6 +138,19 @@ class TestNeoShareGUI(unittest.TestCase):
     def test_port_env_variable_fallback(self):
         env_port = os.environ.get("PORT", "8000")
         self.assertTrue(env_port.isdigit())
+
+
+    def test_gzip_compression_when_accepted(self):
+        url = f'http://127.0.0.1:{self.port}/?json=1'
+        req = urllib.request.Request(url)
+        req.add_header('Accept-Encoding', 'gzip')
+        with urllib.request.urlopen(req) as res:
+            self.assertEqual(res.status, 200)
+            self.assertEqual(res.headers.get('Content-Encoding'), 'gzip')
+            raw = res.read()
+            decompressed = gzip.decompress(raw)
+            data = json.loads(decompressed.decode('utf-8'))
+            self.assertIn('entries', data)
 
 if __name__ == '__main__':
     unittest.main()
