@@ -9,6 +9,7 @@ import mimetypes
 import time
 import hashlib
 import secrets
+import gzip
 import base64
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import unquote, urlparse, parse_qs
