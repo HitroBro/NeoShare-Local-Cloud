@@ -580,8 +580,12 @@ class FileServer(BaseHTTPRequestHandler):
             result = {"path": url_path, "entries": files}
             data = json.dumps(result, indent=2).encode("utf-8")
 
+            data, is_gzipped = self.compress_if_supported(data, "application/json")
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            if is_gzipped:
+                self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", "no-cache")
             self.send_security_headers()
