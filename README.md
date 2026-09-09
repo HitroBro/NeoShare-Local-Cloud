@@ -65,6 +65,7 @@ Open browser to `http://localhost:8000` (or your custom port)
 ## Features
 
 - **Zero Dependencies** — Pure Python standard library
+- **Dynamic Gzip Compression** — 70-80% smaller JSON & static transfers
 - **Multi-threaded** — One thread per connection
 - **Security Hardened** — Path traversal protection, 2GB upload limit
 - **Range Requests** — Video seeking/resume support
