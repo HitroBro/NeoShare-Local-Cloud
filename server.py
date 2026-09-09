@@ -367,7 +367,7 @@ class FileServer(BaseHTTPRequestHandler):
         accept_encoding = self.headers.get("Accept-Encoding", "")
         if "gzip" in accept_encoding:
             try:
-                compressed = gzip.compress(data, compresslevel=6)
+                compressed = gzip.compress(data, compresslevel=5)
                 return compressed, True
             except Exception:
                 return data, False
