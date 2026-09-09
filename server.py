@@ -359,7 +359,7 @@ class FileServer(BaseHTTPRequestHandler):
 
     def compress_if_supported(self, data: bytes, mime: str) -> tuple[bytes, bool]:
         """Compress payload with gzip if accepted by client and size > 256 bytes."""
-        if len(data) < 256:
+        if len(data) < 200:
             return data, False
         compressible_types = ["text/", "application/json", "application/javascript", "text/css", "text/html"]
         if not any(mime.startswith(ct) for ct in compressible_types):
