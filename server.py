@@ -455,6 +455,7 @@ class FileServer(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", mime_type)
                 self.send_header("Content-Length", str(file_size))
                 self.send_header("Accept-Ranges", "bytes")
+                self.send_header("ETag", etag)
 
                 disp = "attachment" if self.should_download(mime_type) else "inline"
                 self.send_header("Content-Disposition", f'{disp}; filename="{filename}"')
