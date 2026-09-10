@@ -429,6 +429,16 @@ class FileServer(BaseHTTPRequestHandler):
                 return self.send_error(403, "Permission denied")
 
             file_size = os.path.getsize(path)
+            mtime = os.path.getmtime(path)
+            etag = self.generate_etag(mtime, file_size)
+
+            if_none_match = self.headers.get("If-None-Match", "")
+            if if_none_match and etag in if_none_match:
+                self.send_response(304)
+                self.send_header("ETag", etag)
+                self.send_security_headers()
+                self.end_headers()
+                return
 
             mime_type, _ = mimetypes.guess_type(path)
             if mime_type is None:
