@@ -397,7 +397,7 @@ class FileServer(BaseHTTPRequestHandler):
             mtime = os.path.getmtime(path)
             etag = self.generate_etag(mtime, len(data))
             if_none_match = self.headers.get("If-None-Match", "")
-            if if_none_match and etag in if_none_match:
+            if if_none_match and (etag in if_none_match or if_none_match == '*'):
                 self.send_response(304)
                 self.send_header("ETag", etag)
                 self.send_security_headers()
