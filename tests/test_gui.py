@@ -152,5 +152,20 @@ class TestNeoShareGUI(unittest.TestCase):
             data = json.loads(decompressed.decode('utf-8'))
             self.assertIn('entries', data)
 
+
+    def test_etag_and_304_not_modified(self):
+        url = f'http://127.0.0.1:{self.port}/styles.css'
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as res:
+            etag = res.headers.get('ETag')
+            self.assertIsNotNone(etag)
+
+        # Re-request with If-None-Match
+        req2 = urllib.request.Request(url)
+        req2.add_header('If-None-Match', etag)
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(req2)
+        self.assertEqual(ctx.exception.code, 304)
+
 if __name__ == '__main__':
     unittest.main()
