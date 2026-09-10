@@ -394,8 +394,19 @@ class FileServer(BaseHTTPRequestHandler):
             with open(path, "rb") as f:
                 data = f.read()
 
+            mtime = os.path.getmtime(path)
+            etag = self.generate_etag(mtime, len(data))
+            if_none_match = self.headers.get("If-None-Match", "")
+            if if_none_match and etag in if_none_match:
+                self.send_response(304)
+                self.send_header("ETag", etag)
+                self.send_security_headers()
+                self.end_headers()
+                return
+
             data, is_gzipped = self.compress_if_supported(data, mime)
             self.send_response(200)
+            self.send_header("ETag", etag)
             self.send_header("Content-Type", mime)
             if is_gzipped:
                 self.send_header("Content-Encoding", "gzip")
