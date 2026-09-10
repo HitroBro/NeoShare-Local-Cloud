@@ -357,6 +357,10 @@ class FileServer(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response_json)
 
+    def generate_etag(self, mtime: float, size: int) -> str:
+        """Generate strong HTTP ETag based on mtime and byte size."""
+        return f'"{int(mtime):x}-{size:x}"'
+
     def compress_if_supported(self, data: bytes, mime: str) -> tuple[bytes, bool]:
         """Compress payload with gzip if accepted by client and size > 256 bytes."""
         if len(data) < 200:
