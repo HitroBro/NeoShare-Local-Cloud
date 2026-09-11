@@ -623,6 +623,7 @@ class FileServer(BaseHTTPRequestHandler):
             self.send_error(500, f"Error listing directory: {str(e)}")
 
     def log_message(self, format, *args):
+        # Structured access log with timestamp and client IP
         # Timestamped server logs (matches BaseHTTPRequestHandler style)
         print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}")
 
