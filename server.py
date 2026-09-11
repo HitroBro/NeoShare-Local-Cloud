@@ -627,6 +627,18 @@ class FileServer(BaseHTTPRequestHandler):
         print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}")
 
 
+def get_local_lan_ip() -> str:
+    """Determine local LAN IP address for cross-device access."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0.1)
+        s.connect(('10.255.255.255', 1))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+
 if __name__ == "__main__":
     # CLI arguments: root directory, host binding, port
     try:
