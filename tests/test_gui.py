@@ -167,5 +167,12 @@ class TestNeoShareGUI(unittest.TestCase):
             urllib.request.urlopen(req2)
         self.assertEqual(ctx.exception.code, 304)
 
+
+    def test_lan_ip_resolution(self):
+        from server import get_local_lan_ip
+        ip = get_local_lan_ip()
+        self.assertIsInstance(ip, str)
+        self.assertTrue(len(ip.split('.')) == 4)
+
 if __name__ == '__main__':
     unittest.main()
