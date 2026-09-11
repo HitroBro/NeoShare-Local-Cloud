@@ -671,8 +671,10 @@ if __name__ == "__main__":
     print("=" * 50)
     print("🚀 NeoShare File Server (Threaded + Hardened)")
     print("=" * 50)
-    display_host = "localhost" if host == "0.0.0.0" else host
-    print(f"📡 Server running at http://{display_host}:{port}/")
+    lan_ip = get_local_lan_ip()
+    print(f"📡 Local:   http://localhost:{port}/")
+    if lan_ip != "127.0.0.1":
+        print(f"📱 Network: http://{lan_ip}:{port}/")
     print(f"📁 Serving files from: {httpd.serve_root}")
     print("🔧 Press Ctrl+C to stop the server")
     print("=" * 50)
