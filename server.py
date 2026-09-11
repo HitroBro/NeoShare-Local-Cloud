@@ -625,7 +625,8 @@ class FileServer(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         # Structured access log with timestamp and client IP
         # Timestamped server logs (matches BaseHTTPRequestHandler style)
-        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}")
+        ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"[{ts}] {self.client_address[0]} - {format % args}")
 
 
 def get_local_lan_ip() -> str:
