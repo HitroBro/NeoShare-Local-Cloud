@@ -60,7 +60,7 @@ PORT=9000 python server.py
 
 ### Access
 
-Open browser to `http://localhost:8000` (or your custom port)
+Open browser to `http://localhost:8000` or use your displayed Network URL (`http://192.168.x.x:8000`) for mobile devices
 
 ## Features
 
