@@ -687,4 +687,4 @@ if __name__ == "__main__":
         print("\n🛑 Server stopped by user")
         httpd.shutdown()
 
-# Security hardened and symlink safe v1.2.0
+# Production ready: constant-time auth, realpath security, streaming multipart v1.2.0
