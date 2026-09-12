@@ -120,3 +120,13 @@ MIT License — See [LICENSE](LICENSE) for details.
 - 📊 **Animated Upload Progress** — Drag & drop multipart uploads with real-time percentage progress tracking.
 - ⌨️ **Keyboard Accessibility** — Keyboard shortcuts (`/` for search, `u` for upload, `Esc` for modal, arrow navigation).
 - 📱 **Fully Responsive** — Seamlessly adapts from desktop monitors to mobile displays.
+
+
+## v1.2.0 Performance & Security Release
+
+- 🔒 **Unified Constant-Time Authentication** — Basic Auth enforced on `GET`, `HEAD`, and `POST` using `secrets.compare_digest()`.
+- 🛡️ **Symlink Escape Proof** — Canonical realpath resolution and `os.path.commonpath` confinement.
+- 🚀 **Low-Memory Streaming Uploads** — Process multi-gigabyte uploads with O(1) RAM usage via direct-to-disk chunk streaming.
+- 🗜️ **Dynamic Gzip Compression** — On-the-fly HTTP gzip compression for text, code, JSON, and stylesheets.
+- ⚡ **HTTP Caching with ETags** — Lightweight strong ETag generation with 304 Not Modified validation.
+- 📱 **LAN Discovery** — Automatic local Wi-Fi IP detection and dual Local/Network access URLs.
