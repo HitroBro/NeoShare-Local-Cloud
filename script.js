@@ -303,7 +303,7 @@ function copyFileLink(fileUrl) {
 
 
 /**
- * NeoShare File Server - Modern Web GUI v1.1.0
+ * NeoShare File Server - Modern Web GUI v1.2.0
  */
 document.addEventListener('DOMContentLoaded', () => {
     const fileList = document.getElementById('fileList');
