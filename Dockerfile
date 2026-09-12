@@ -39,4 +39,9 @@ ENV PORT=8000
 ENV BASE_DIR=/app
 ENV MAX_UPLOAD_SIZE=2147483648
 
+
+# Healthcheck to monitor server availability
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/?json=1')" || exit 1
+
 ENTRYPOINT ["python3", "server.py"]
