@@ -174,5 +174,31 @@ class TestNeoShareGUI(unittest.TestCase):
         self.assertIsInstance(ip, str)
         self.assertTrue(len(ip.split('.')) == 4)
 
+
+    def test_large_streaming_upload_efficiency(self):
+        url = f'http://127.0.0.1:{self.port}/'
+        boundary = "---------------------------5521487214902148712498"
+        # 256KB synthetic binary chunk
+        payload = b"X" * (256 * 1024)
+        body = (
+            f"--{boundary}\r\n".encode() +
+            b'Content-Disposition: form-data; name="file"; filename="large_sample.bin"\r\n' +
+            b"Content-Type: application/octet-stream\r\n\r\n" +
+            payload +
+            f"\r\n--{boundary}--\r\n".encode()
+        )
+        req = urllib.request.Request(url, data=body, method='POST')
+        req.add_header('Content-Type', f'multipart/form-data; boundary={boundary}')
+        with urllib.request.urlopen(req) as res:
+            self.assertEqual(res.status, 200)
+            data = json.loads(res.read().decode('utf-8'))
+            self.assertIn("large_sample.bin", data.get("uploaded_files", []))
+
+        # Clean up
+        large_path = os.path.join(BASE_DIR, "large_sample.bin")
+        if os.path.exists(large_path):
+            self.assertEqual(os.path.getsize(large_path), len(payload))
+            os.remove(large_path)
+
 if __name__ == '__main__':
     unittest.main()
