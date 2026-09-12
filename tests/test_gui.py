@@ -200,5 +200,15 @@ class TestNeoShareGUI(unittest.TestCase):
             self.assertEqual(os.path.getsize(large_path), len(payload))
             os.remove(large_path)
 
+
+    def test_archive_download_tar_gz(self):
+        url = f'http://127.0.0.1:{self.port}/?download=zip'
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as res:
+            self.assertEqual(res.status, 200)
+            self.assertEqual(res.headers.get('Content-Type'), 'application/gzip')
+            raw = res.read()
+            self.assertTrue(len(raw) > 0)
+
 if __name__ == '__main__':
     unittest.main()
