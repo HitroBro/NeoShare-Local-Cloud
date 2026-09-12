@@ -26,3 +26,6 @@ jobs:
       - name: Run Test Suite
         run: |
           python3 -m unittest discover -s tests -v
+
+      - name: Verify Docker build
+        run: docker build -t neoshare:test .
