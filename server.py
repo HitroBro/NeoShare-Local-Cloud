@@ -671,7 +671,7 @@ if __name__ == "__main__":
     httpd.serve_root = os.path.realpath(root)
 
     print("=" * 50)
-    print("🚀 NeoShare File Server (Threaded + Hardened)")
+    print("🚀 NeoShare File Server v1.2.0 (Threaded + Hardened + Streaming)")
     print("=" * 50)
     lan_ip = get_local_lan_ip()
     print(f"📡 Local:   http://localhost:{port}/")
