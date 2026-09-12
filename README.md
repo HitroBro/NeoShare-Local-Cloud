@@ -130,3 +130,6 @@ MIT License — See [LICENSE](LICENSE) for details.
 - 🗜️ **Dynamic Gzip Compression** — On-the-fly HTTP gzip compression for text, code, JSON, and stylesheets.
 - ⚡ **HTTP Caching with ETags** — Lightweight strong ETag generation with 304 Not Modified validation.
 - 📱 **LAN Discovery** — Automatic local Wi-Fi IP detection and dual Local/Network access URLs.
+
+
+<!-- Release v1.2.0 verified -->
