@@ -1,0 +1,13 @@
+services:
+  neoshare:
+    build: .
+    container_name: neoshare-server
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - MAX_UPLOAD_SIZE=2147483648
+    volumes:
+      - ./shared:/app/shared
+    command: ["python3", "server.py", "-r", "/app/shared"]
