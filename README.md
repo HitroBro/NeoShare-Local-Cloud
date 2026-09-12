@@ -1,4 +1,4 @@
-# NeoShare-Local-Cloud v1.1.0
+# NeoShare-Local-Cloud v1.2.0
 
 A custom HTTP file server built from scratch with Zero Dependencies.
 
