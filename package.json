@@ -1,6 +1,6 @@
 {
   "name": "neoshare-local-cloud",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Modern zero-dependency HTTP local cloud server and file manager",
   "scripts": {
     "test": "python3 -m unittest discover -s tests -v",
